@@ -1,8 +1,11 @@
 import pytest
 
-from two_sum import two_sum
+from two_sum import two_sum, two_sum_via_pattern
+
+SOLUTIONS = [two_sum, two_sum_via_pattern]
 
 
+@pytest.mark.parametrize("solve", SOLUTIONS)
 @pytest.mark.parametrize(
     ("nums", "target", "expected"),
     [
@@ -11,10 +14,12 @@ from two_sum import two_sum
         ([3, 3], 6, [0, 1]),  # equal values at different indices are fine
     ],
 )
-def test_two_sum(nums, target, expected):
+def test_two_sum(solve, nums, target, expected):
     # Any order is allowed, so compare sorted indices.
-    assert sorted(two_sum(nums, target)) == expected
+    assert sorted(solve(nums, target)) == expected
 
-def test_two_sum_raises_when_no_pair_exists():
-    with pytest.raises(TypeError):
-        two_sum([1, 2, 3], 100)
+
+@pytest.mark.parametrize("solve", SOLUTIONS)
+def test_raises_when_no_pair_exists(solve):
+    with pytest.raises(ValueError):
+        solve([1, 2, 3], 100)
